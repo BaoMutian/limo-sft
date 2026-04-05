@@ -1,0 +1,205 @@
+# ============================================================
+# LIMO-SFT Evaluation Configuration
+# ============================================================
+
+# --- API Configuration ---
+api:
+  base_url: "https://dashscope.aliyuncs.com/compatible-mode/v1"
+  api_key: "your-api-key-here"  # set via --api-key or env OPENAI_API_KEY
+  model: "qwen-plus"
+
+# --- Inference Configuration ---
+inference:
+  mode: "cot"               # "cot" (chain-of-thought) or "direct"
+  max_tokens: 4096           # max generation tokens
+  temperature: 0.0           # 0 for deterministic
+  top_p: 1.0
+  n_samples: 1               # number of samples per problem (for pass@k)
+  timeout: 120               # per-request timeout in seconds
+  max_concurrency: 8         # parallel API requests
+  max_retries: 3             # retry on failure
+
+# --- Evaluation Configuration ---
+eval:
+  output_dir: "results"
+  save_responses: true        # save full model responses
+  resume: true                # skip already-evaluated problems
+
+# --- Benchmark Configurations ---
+# Each benchmark specifies data path, format, answer type, and optional overrides.
+# answer_type: "integer" | "expression" | "choice"
+# data_format: "jsonl" | "parquet"
+benchmarks:
+  math500:
+    enabled: true
+    name: "MATH-500"
+    path: "dataset/MATH-500/test.jsonl"
+    data_format: "jsonl"
+    problem_key: "problem"
+    answer_key: "answer"
+    answer_type: "expression"
+    metadata_keys: ["subject", "level"]
+    system_prompt: "You are a helpful math assistant."
+    instruction_cot: "Please reason step by step, and put your final answer within \\boxed{}."
+    instruction_direct: "Solve the following problem. Put your final answer within \\boxed{}. Be concise."
+
+  aime_2024_I:
+    enabled: true
+    name: "AIME 2024 I"
+    path: "dataset/MathArena/aime_2024_I/data/train-00000-of-00001.parquet"
+    data_format: "parquet"
+    problem_key: "problem"
+    answer_key: "answer"
+    answer_type: "integer"
+    system_prompt: "You are a helpful math assistant."
+    instruction_cot: "Please reason step by step, and put your final answer within \\boxed{}.\nThe answer is an integer between 0 and 999 inclusive."
+    instruction_direct: "Solve the following problem. Put your final answer within \\boxed{}.\nThe answer is an integer between 0 and 999 inclusive."
+
+  aime_2024_II:
+    enabled: true
+    name: "AIME 2024 II"
+    path: "dataset/MathArena/aime_2024_II/data/train-00000-of-00001.parquet"
+    data_format: "parquet"
+    problem_key: "problem"
+    answer_key: "answer"
+    answer_type: "integer"
+    system_prompt: "You are a helpful math assistant."
+    instruction_cot: "Please reason step by step, and put your final answer within \\boxed{}.\nThe answer is an integer between 0 and 999 inclusive."
+    instruction_direct: "Solve the following problem. Put your final answer within \\boxed{}.\nThe answer is an integer between 0 and 999 inclusive."
+
+  aime_2025:
+    enabled: true
+    name: "AIME 2025"
+    path: "dataset/MathArena/aime_2025/data/train-00000-of-00001.parquet"
+    data_format: "parquet"
+    problem_key: "problem"
+    answer_key: "answer"
+    answer_type: "integer"
+    metadata_keys: ["problem_type"]
+    system_prompt: "You are a helpful math assistant."
+    instruction_cot: "Please reason step by step, and put your final answer within \\boxed{}.\nThe answer is an integer between 0 and 999 inclusive."
+    instruction_direct: "Solve the following problem. Put your final answer within \\boxed{}.\nThe answer is an integer between 0 and 999 inclusive."
+
+  aime_2026:
+    enabled: true
+    name: "AIME 2026"
+    path: "dataset/MathArena/aime_2026/data/train-00000-of-00001.parquet"
+    data_format: "parquet"
+    problem_key: "problem"
+    answer_key: "answer"
+    answer_type: "integer"
+    system_prompt: "You are a helpful math assistant."
+    instruction_cot: "Please reason step by step, and put your final answer within \\boxed{}.\nThe answer is an integer between 0 and 999 inclusive."
+    instruction_direct: "Solve the following problem. Put your final answer within \\boxed{}.\nThe answer is an integer between 0 and 999 inclusive."
+
+  hmmt_feb_2024:
+    enabled: true
+    name: "HMMT Feb 2024"
+    path: "dataset/MathArena/hmmt_feb_2024/data/train-00000-of-00001.parquet"
+    data_format: "parquet"
+    problem_key: "problem"
+    answer_key: "answer"
+    answer_type: "expression"
+    metadata_keys: ["problem_type"]
+    system_prompt: "You are a helpful math assistant."
+    instruction_cot: "Please reason step by step, and put your final answer within \\boxed{}."
+    instruction_direct: "Solve the following problem. Put your final answer within \\boxed{}. Be concise."
+
+  hmmt_feb_2025:
+    enabled: true
+    name: "HMMT Feb 2025"
+    path: "dataset/MathArena/hmmt_feb_2025/data/train-00000-of-00001.parquet"
+    data_format: "parquet"
+    problem_key: "problem"
+    answer_key: "answer"
+    answer_type: "expression"
+    metadata_keys: ["problem_type"]
+    system_prompt: "You are a helpful math assistant."
+    instruction_cot: "Please reason step by step, and put your final answer within \\boxed{}."
+    instruction_direct: "Solve the following problem. Put your final answer within \\boxed{}. Be concise."
+
+  hmmt_nov_2025:
+    enabled: true
+    name: "HMMT Nov 2025"
+    path: "dataset/MathArena/hmmt_nov_2025/data/train-00000-of-00001.parquet"
+    data_format: "parquet"
+    problem_key: "problem"
+    answer_key: "answer"
+    answer_type: "expression"
+    metadata_keys: ["problem_type"]
+    system_prompt: "You are a helpful math assistant."
+    instruction_cot: "Please reason step by step, and put your final answer within \\boxed{}."
+    instruction_direct: "Solve the following problem. Put your final answer within \\boxed{}. Be concise."
+
+  hmmt_feb_2026:
+    enabled: true
+    name: "HMMT Feb 2026"
+    path: "dataset/MathArena/hmmt_feb_2026/data/train-00000-of-00001.parquet"
+    data_format: "parquet"
+    problem_key: "problem"
+    answer_key: "answer"
+    answer_type: "expression"
+    metadata_keys: ["problem_type"]
+    system_prompt: "You are a helpful math assistant."
+    instruction_cot: "Please reason step by step, and put your final answer within \\boxed{}."
+    instruction_direct: "Solve the following problem. Put your final answer within \\boxed{}. Be concise."
+
+  smt_2025:
+    enabled: true
+    name: "SMT 2025"
+    path: "dataset/MathArena/smt_2025/data/train-00000-of-00001.parquet"
+    data_format: "parquet"
+    problem_key: "problem"
+    answer_key: "answer"
+    answer_type: "expression"
+    metadata_keys: ["problem_type"]
+    system_prompt: "You are a helpful math assistant."
+    instruction_cot: "Please reason step by step, and put your final answer within \\boxed{}."
+    instruction_direct: "Solve the following problem. Put your final answer within \\boxed{}. Be concise."
+
+  cmimc_2025:
+    enabled: true
+    name: "CMIMC 2025"
+    path: "dataset/MathArena/cmimc_2025/data/train-00000-of-00001.parquet"
+    data_format: "parquet"
+    problem_key: "problem"
+    answer_key: "answer"
+    answer_type: "expression"
+    metadata_keys: ["problem_type"]
+    system_prompt: "You are a helpful math assistant."
+    instruction_cot: "Please reason step by step, and put your final answer within \\boxed{}."
+    instruction_direct: "Solve the following problem. Put your final answer within \\boxed{}. Be concise."
+
+  arxivmath:
+    enabled: true
+    name: "ArxivMath"
+    path: "dataset/MathArena/arxivmath/data/train-00000-of-00001.parquet"
+    data_format: "parquet"
+    problem_key: "problem"
+    answer_key: "answer"
+    answer_type: "expression"
+    metadata_keys: ["problem_type", "source", "competition"]
+    system_prompt: "You are a helpful math assistant."
+    instruction_cot: "Please reason step by step, and put your final answer within \\boxed{}."
+    instruction_direct: "Solve the following problem. Put your final answer within \\boxed{}. Be concise."
+
+  brumo_2025:
+    enabled: true
+    name: "BRUMO 2025"
+    path: "dataset/MathArena/brumo_2025/data/train-00000-of-00001.parquet"
+    data_format: "parquet"
+    problem_key: "problem"
+    answer_key: "answer"
+    answer_type: "expression"
+    metadata_keys: ["problem_type"]
+    system_prompt: "You are a helpful math assistant."
+    instruction_cot: "Please reason step by step, and put your final answer within \\boxed{}."
+    instruction_direct: "Solve the following problem. Put your final answer within \\boxed{}. Be concise."
+
+# --- Benchmarks NOT included (with reasons) ---
+# usamo_*:    Proof-based, requires rubric grading
+# imo_2025:   Proof-based, requires rubric grading
+# imc_2025:   Proof-based, requires rubric grading
+# miklos_2025: Proof-based, requires rubric grading
+# kangaroo_*: Image-based problems, requires vision model
+# LIMO-v2:    Training data, not a benchmark
