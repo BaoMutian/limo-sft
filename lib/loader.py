@@ -1,7 +1,9 @@
 """Dataset loaders for various benchmark formats."""
 
+import csv
 import json
 import logging
+import random
 from pathlib import Path
 
 logger = logging.getLogger(__name__)
@@ -44,6 +46,45 @@ def load_parquet(path: str, problem_key: str, answer_key: str, metadata_keys: li
     return items
 
 
+def load_gpqa(path: str, metadata_keys: list[str] | None = None, seed: int = 42) -> list[dict]:
+    """Load GPQA CSV with option shuffling.
+
+    Shuffles the 4 options per question with a fixed seed for reproducibility,
+    then records which letter (A-D) is correct.
+    """
+    rng = random.Random(seed)
+    items = []
+    with open(path) as f:
+        reader = csv.DictReader(f)
+        for i, row in enumerate(reader):
+            question = row["Question"]
+            correct = row["Correct Answer"]
+            options = [
+                correct,
+                row["Incorrect Answer 1"],
+                row["Incorrect Answer 2"],
+                row["Incorrect Answer 3"],
+            ]
+            rng.shuffle(options)
+            correct_idx = options.index(correct)
+            correct_letter = "ABCD"[correct_idx]
+
+            labels = ["A", "B", "C", "D"]
+            options_text = "\n".join(f"({labels[j]}) {opt}" for j, opt in enumerate(options))
+            full_problem = f"{question}\n\n{options_text}"
+
+            item = {
+                "idx": i,
+                "problem": full_problem,
+                "answer": correct_letter,
+            }
+            for key in (metadata_keys or []):
+                if key in row:
+                    item[key] = row[key]
+            items.append(item)
+    return items
+
+
 def load_benchmark(bench_cfg: dict) -> list[dict]:
     """Load a benchmark dataset based on its configuration."""
     fmt = bench_cfg["data_format"]
@@ -64,5 +105,7 @@ def load_benchmark(bench_cfg: dict) -> list[dict]:
         return load_jsonl(**kwargs)
     elif fmt == "parquet":
         return load_parquet(**kwargs)
+    elif fmt == "gpqa_csv":
+        return load_gpqa(path, metadata_keys=bench_cfg.get("metadata_keys"))
     else:
         raise ValueError(f"Unknown data format: {fmt}")

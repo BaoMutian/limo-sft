@@ -1,0 +1,72 @@
+# yaml file for compatibility with inspect-ai
+
+name: GPQA
+description: >
+  GPQA is a multiple-choice, Q&A dataset of very hard questions written and
+  validated by experts in biology, physics, and chemistry. When attempting
+  questions out of their own domain (e.g., a physicist answers a chemistry
+  question), these experts get only 34% accuracy, despite spending >30m with full
+  access to Google.
+
+evaluation_framework: inspect-ai
+
+tasks:
+  - id: diamond
+    config: gpqa_diamond
+    split: train
+
+    epochs: 4
+    epoch_reducer: pass_at_1
+
+    shuffle_choices: true
+
+    field_spec:
+      input: Question
+      target: "literal:D"
+      choices: ["Incorrect Answer 1", "Incorrect Answer 2", "Incorrect Answer 3", "Correct Answer"]
+
+    solvers:
+      - name: multiple_choice
+
+    scorers:
+      - name: choice
+
+  - id: main
+    config: gpqa_main
+    split: train
+
+    epochs: 4
+    epoch_reducer: pass_at_1
+
+    shuffle_choices: true
+
+    field_spec:
+      input: Question
+      target: "literal:D"
+      choices: ["Incorrect Answer 1", "Incorrect Answer 2", "Incorrect Answer 3", "Correct Answer"]
+
+    solvers:
+      - name: multiple_choice
+
+    scorers:
+      - name: choice
+
+  - id: extended
+    config: gpqa_extended
+    split: train
+
+    epochs: 4
+    epoch_reducer: pass_at_1
+
+    shuffle_choices: true
+
+    field_spec:
+      input: Question
+      target: "literal:D"
+      choices: ["Incorrect Answer 1", "Incorrect Answer 2", "Incorrect Answer 3", "Correct Answer"]
+
+    solvers:
+      - name: multiple_choice
+
+    scorers:
+      - name: choice

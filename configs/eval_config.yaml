@@ -196,6 +196,19 @@ benchmarks:
     instruction_cot: "Please reason step by step, and put your final answer within \\boxed{}."
     instruction_direct: "Solve the following problem. Put your final answer within \\boxed{}. Be concise."
 
+  gpqa_diamond:
+    enabled: true
+    name: "GPQA Diamond"
+    path: "dataset/GPQA/gpqa_diamond.csv"
+    data_format: "gpqa_csv"
+    problem_key: "Question"
+    answer_key: "Correct Answer"
+    answer_type: "choice"
+    metadata_keys: ["High-level domain", "Subdomain"]
+    system_prompt: "You are an expert in science. Answer the following multiple-choice question."
+    instruction_cot: "Please reason step by step, then state your final answer as a single letter (A, B, C, or D) within \\boxed{}."
+    instruction_direct: "Answer the following multiple-choice question. Put your final answer as a single letter (A, B, C, or D) within \\boxed{}."
+
 # --- Benchmarks NOT included (with reasons) ---
 # usamo_*:    Proof-based, requires rubric grading
 # imo_2025:   Proof-based, requires rubric grading

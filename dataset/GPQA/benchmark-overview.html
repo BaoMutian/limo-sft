@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GPQA / GPQA Diamond 基准说明</title>
+    <style>
+      :root {
+        --bg: #f2eee6;
+        --bg-alt: #e8e2d6;
+        --paper: rgba(255, 252, 247, 0.86);
+        --paper-strong: rgba(255, 252, 248, 0.96);
+        --text: #1f1b17;
+        --muted: #665b4f;
+        --line: rgba(52, 38, 18, 0.12);
+        --accent: #114b5f;
+        --accent-2: #c26a2f;
+        --accent-3: #7c4d9d;
+        --shadow: 0 22px 60px rgba(56, 39, 17, 0.08);
+        --radius: 24px;
+      }
+
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        color: var(--text);
+        font-family: "IBM Plex Sans", "PingFang SC", "Microsoft YaHei", sans-serif;
+        background:
+          radial-gradient(circle at top left, rgba(17, 75, 95, 0.16), transparent 28rem),
+          radial-gradient(circle at top right, rgba(194, 106, 47, 0.14), transparent 26rem),
+          linear-gradient(180deg, var(--bg) 0%, var(--bg-alt) 100%);
+      }
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        opacity: 0.3;
+        background-image:
+          linear-gradient(rgba(31, 27, 23, 0.04) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(31, 27, 23, 0.04) 1px, transparent 1px);
+        background-size: 34px 34px;
+      }
+      a { color: inherit; }
+      .shell {
+        width: min(1180px, calc(100vw - 28px));
+        margin: 0 auto;
+        padding: 18px 0 56px;
+        position: relative;
+        z-index: 1;
+      }
+      .hero {
+        position: relative;
+        overflow: hidden;
+        padding: 32px;
+        border-radius: 34px;
+        background: linear-gradient(135deg, rgba(17, 75, 95, 0.96), rgba(124, 77, 157, 0.88) 52%, rgba(194, 106, 47, 0.9));
+        color: #fffaf4;
+        box-shadow: var(--shadow);
+      }
+      .hero::after {
+        content: "";
+        position: absolute;
+        width: 320px;
+        height: 320px;
+        right: -110px;
+        top: -110px;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgba(255, 233, 187, 0.34), transparent 68%);
+      }
+      .eyebrow, h1, h2, h3, .metric-value, .browser-stat strong {
+        font-family: "Space Grotesk", "Avenir Next Condensed", "PingFang SC", sans-serif;
+      }
+      .eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        padding: 8px 12px;
+        border-radius: 999px;
+        background: rgba(255, 248, 241, 0.12);
+        border: 1px solid rgba(255, 248, 241, 0.16);
+        font-size: 12px;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+      .eyebrow::before {
+        content: "";
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: #ffd980;
+      }
+      .hero-grid {
+        display: grid;
+        grid-template-columns: 1.3fr 0.9fr;
+        gap: 24px;
+        margin-top: 18px;
+      }
+      h1 {
+        margin: 14px 0 16px;
+        font-size: clamp(40px, 7vw, 80px);
+        line-height: 0.95;
+        letter-spacing: -0.06em;
+        max-width: 8ch;
+      }
+      .hero-copy {
+        margin: 0;
+        max-width: 62ch;
+        font-size: 16px;
+        line-height: 1.76;
+        color: rgba(255, 249, 244, 0.9);
+      }
+      .hero-tags { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 20px; }
+      .hero-tags span {
+        padding: 10px 14px;
+        border-radius: 999px;
+        border: 1px solid rgba(255, 248, 241, 0.18);
+        background: rgba(255, 248, 241, 0.1);
+        font-size: 14px;
+      }
+      .hero-side { display: grid; gap: 16px; }
+      .hero-card {
+        padding: 20px;
+        border-radius: 22px;
+        border: 1px solid rgba(255, 248, 241, 0.15);
+        background: rgba(255, 248, 241, 0.12);
+      }
+      .hero-card h3 { margin: 0 0 10px; font-size: 20px; }
+      .hero-card p { margin: 0; line-height: 1.7; color: rgba(255, 249, 244, 0.88); }
+      .hero-big { display: flex; justify-content: space-between; align-items: end; gap: 14px; }
+      .hero-big strong { display: block; font-size: 44px; line-height: 0.92; }
+      .hero-big small { color: rgba(255, 249, 244, 0.72); }
+      section { margin-top: 22px; }
+      .panel {
+        padding: 26px;
+        border-radius: var(--radius);
+        border: 1px solid var(--line);
+        background: var(--paper);
+        box-shadow: var(--shadow);
+      }
+      .section-head {
+        display: flex;
+        justify-content: space-between;
+        gap: 16px;
+        align-items: end;
+        margin-bottom: 18px;
+      }
+      .section-head h2 {
+        margin: 0;
+        font-size: clamp(28px, 4vw, 42px);
+        letter-spacing: -0.05em;
+      }
+      .section-head p {
+        margin: 0;
+        max-width: 60ch;
+        color: var(--muted);
+        line-height: 1.75;
+      }
+      .pill {
+        display: inline-flex;
+        align-items: center;
+        padding: 8px 12px;
+        border-radius: 999px;
+        background: rgba(17, 75, 95, 0.1);
+        color: var(--accent);
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+      }
+      .metrics { display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px; }
+      .metric {
+        padding: 18px;
+        border-radius: 18px;
+        border: 1px solid var(--line);
+        background: var(--paper-strong);
+      }
+      .metric-label { font-size: 13px; color: var(--muted); }
+      .metric-value { margin-top: 8px; font-size: clamp(28px, 4vw, 40px); line-height: 0.95; }
+      .metric-note { margin-top: 10px; font-size: 13px; color: var(--muted); line-height: 1.6; }
+      .two-col { display: grid; grid-template-columns: 1.06fr 0.94fr; gap: 16px; }
+      .cards { display: grid; gap: 14px; }
+      .cards.three { grid-template-columns: repeat(3, 1fr); }
+      .card {
+        padding: 18px;
+        border-radius: 18px;
+        border: 1px solid var(--line);
+        background: var(--paper-strong);
+      }
+      .card h3 { margin: 0 0 10px; font-size: 19px; }
+      .card p, .timeline p, .footer p, .browser-note { margin: 0; color: var(--muted); line-height: 1.74; }
+      .timeline { display: grid; gap: 12px; }
+      .timeline-item { padding-left: 14px; border-left: 4px solid rgba(194, 106, 47, 0.28); }
+      .timeline-item strong { display: block; margin-bottom: 6px; }
+      .validation-browser {
+        display: grid;
+        grid-template-columns: 330px minmax(0, 1fr);
+        gap: 16px;
+      }
+      .browser-sidebar, .browser-detail {
+        min-height: 640px;
+        border-radius: 22px;
+        border: 1px solid var(--line);
+        background: var(--paper-strong);
+      }
+      .browser-sidebar { padding: 18px; }
+      .browser-summary { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 16px; }
+      .browser-stat {
+        padding: 14px;
+        border-radius: 16px;
+        background: rgba(17, 75, 95, 0.06);
+        border: 1px solid rgba(17, 75, 95, 0.12);
+      }
+      .browser-stat strong { display: block; font-size: 28px; line-height: 1; }
+      .browser-stat span { display: block; margin-top: 6px; color: var(--muted); font-size: 12px; line-height: 1.5; }
+      .filter-group + .filter-group { margin-top: 12px; }
+      .filter-group label { display: block; margin-bottom: 6px; font-size: 13px; color: var(--muted); }
+      .filter-group input, .filter-group select {
+        width: 100%;
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        padding: 12px 13px;
+        font: inherit;
+        background: #fffdf9;
+      }
+      .result-meta {
+        display: flex;
+        justify-content: space-between;
+        gap: 10px;
+        margin: 14px 0 12px;
+        color: var(--muted);
+        font-size: 13px;
+      }
+      .task-list { display: grid; gap: 10px; max-height: 430px; overflow: auto; padding-right: 4px; }
+      .task-button {
+        width: 100%;
+        text-align: left;
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        padding: 14px;
+        background: #fffdf9;
+        cursor: pointer;
+      }
+      .task-button:hover, .task-button.active {
+        border-color: rgba(17, 75, 95, 0.28);
+        background: rgba(17, 75, 95, 0.06);
+      }
+      .task-topline, .detail-topline, .detail-meta { display: flex; flex-wrap: wrap; gap: 8px; }
+      .mini-pill {
+        display: inline-flex;
+        padding: 5px 9px;
+        border-radius: 999px;
+        background: rgba(17, 75, 95, 0.08);
+        color: var(--accent);
+        font-size: 11px;
+        font-weight: 700;
+      }
+      .task-preview { margin-top: 10px; font-size: 14px; line-height: 1.6; }
+      .task-id { margin-top: 8px; color: var(--muted); font-size: 12px; }
+      .browser-detail { padding: 20px; }
+      .detail-empty { min-height: 100%; display: grid; place-items: center; text-align: center; color: var(--muted); }
+      .browser-detail h3 { margin: 14px 0 10px; font-size: 26px; }
+      .detail-grid { display: grid; gap: 16px; margin-top: 16px; }
+      .detail-block {
+        padding: 16px;
+        border-radius: 16px;
+        border: 1px solid var(--line);
+        background: #fffdf9;
+      }
+      .detail-label { display: block; margin-bottom: 8px; color: var(--muted); font-size: 13px; }
+      .detail-pre { margin: 0; white-space: pre-wrap; word-break: break-word; line-height: 1.74; }
+      .choice-list { margin: 0; padding-left: 18px; color: var(--text); }
+      .choice-list li + li { margin-top: 6px; }
+      .footer {
+        padding: 22px 26px;
+        border-radius: 22px;
+        border: 1px solid var(--line);
+        background: rgba(255, 252, 247, 0.76);
+      }
+      @media (max-width: 980px) {
+        .hero-grid, .two-col, .validation-browser, .cards.three, .metrics { grid-template-columns: 1fr 1fr; }
+      }
+      @media (max-width: 760px) {
+        .shell { width: min(100vw - 16px, 100%); padding-top: 8px; }
+        .hero, .panel { padding: 20px; }
+        .hero-grid, .two-col, .validation-browser, .cards.three, .metrics { grid-template-columns: 1fr; }
+        .section-head { flex-direction: column; align-items: start; }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="shell">
+      <header class="hero">
+        <span class="eyebrow">Benchmark Briefing</span>
+        <div class="hero-grid">
+          <div>
+            <h1>GPQA 测的是高门槛科学多选推理，不是 agent 行动能力。</h1>
+            <p class="hero-copy">
+              这个 benchmark 的重点不在开放生成，而在专家级科学多选推理。当前本地副本已经包含完整题面、
+              四个选项、正确答案、解释和 validator 元数据，因此它更像一个公开研究题库，而不是 hidden-label 测试平台。
+            </p>
+            <div class="hero-tags">
+              <span>Diamond 198 题</span>
+              <span>Main 448 题</span>
+              <span>Extended 546 题</span>
+              <span>核对日期 2026-04-05</span>
+            </div>
+          </div>
+          <div class="hero-side">
+            <div class="hero-card">
+              <h3>一句话定位</h3>
+              <p>`GPQA` 是公开的高难科学多选 benchmark，而 `GPQA Diamond` 是其中最常被单独报告的硬子集。</p>
+            </div>
+            <div class="hero-card hero-big">
+              <div>
+                <strong>1192</strong>
+                <small>当前查看器纳入的总题数</small>
+              </div>
+              <div>
+                <strong>3</strong>
+                <small>生物 / 化学 / 物理</small>
+              </div>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <section class="panel">
+        <div class="section-head">
+          <div>
+            <h2>核心数字</h2>
+            <p>先把最重要的结构信息放平：子集规模、学科覆盖和 question writer / subdomain 的复杂度。</p>
+          </div>
+          <span class="pill">Local Snapshot</span>
+        </div>
+        <div class="metrics">
+          <article class="metric"><div class="metric-label">Diamond</div><div class="metric-value">198</div><div class="metric-note">最常见的报告子集。</div></article>
+          <article class="metric"><div class="metric-label">Main</div><div class="metric-value">448</div><div class="metric-note">更大的标准集合。</div></article>
+          <article class="metric"><div class="metric-label">Extended</div><div class="metric-value">546</div><div class="metric-note">扩展集合。</div></article>
+          <article class="metric"><div class="metric-label">Diamond subdomains</div><div class="metric-value">13</div><div class="metric-note">Diamond 本地派生统计。</div></article>
+          <article class="metric"><div class="metric-label">Diamond writers</div><div class="metric-value">35</div><div class="metric-note">Diamond 题目作者人数。</div></article>
+        </div>
+      </section>
+
+      <div class="two-col">
+        <section class="panel">
+          <div class="section-head">
+            <div>
+              <h2>它主要测什么</h2>
+              <p>如果把 GPQA 讲成“普通科学 QA”，会低估它对专家知识和多选干扰项设计的要求。</p>
+            </div>
+            <span class="pill">Capability</span>
+          </div>
+          <div class="cards three">
+            <article class="card"><h3>专家级知识门槛</h3><p>覆盖 biology / chemistry / physics，很多题对非专家即使开放搜索也不友好。</p></article>
+            <article class="card"><h3>多选推理</h3><p>真正评测的是在强干扰选项下能否稳定做出正确选择，而不只是生成看起来合理的解释。</p></article>
+            <article class="card"><h3>离线评测</h3><p>它不是 agent benchmark，也不包含网页操作、文件工具链或外部环境交互。</p></article>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="section-head">
+            <div>
+              <h2>评测机制</h2>
+              <p>本地 `eval.yaml` 的关键不是“第四列永远是正确答案”，而是打乱选项后再评分。</p>
+            </div>
+            <span class="pill">Eval</span>
+          </div>
+          <div class="timeline">
+            <div class="timeline-item"><strong>1. 读取 Question 与四个选项</strong><p>输入字段使用 `Question`，选项来自三列错误答案加一列正确答案。</p></div>
+            <div class="timeline-item"><strong>2. 打乱选项</strong><p>`shuffle_choices: true`，所以模型不能靠列位置投机。</p></div>
+            <div class="timeline-item"><strong>3. 目标标签是打乱后的正确项</strong><p>本地 inspect-ai 包装把目标写成字面上的 `D`，但那是经过 shuffle 后的评测目标，不是原始 CSV 列位置。</p></div>
+            <div class="timeline-item"><strong>4. 关注最终选择正确率</strong><p>解释可用于分析，但最终指标仍然是多选答案是否选对。</p></div>
+          </div>
+        </section>
+      </div>
+
+      <section class="panel">
+        <div class="section-head">
+          <div>
+            <h2>公开数据查看器</h2>
+            <p>这里直接挂接本地 `gpqa-browser-data.js`。可以按 subset 和 domain 过滤，查看题面、四个选项、标准答案与 explanation 预览。</p>
+          </div>
+          <span class="pill">Data Viewer</span>
+        </div>
+        <p class="browser-note">注意：当前查看器使用的是本地公开 CSV 派生数据，因此这里展示的答案和 explanation 都不是 hidden labels。</p>
+        <div class="validation-browser" style="margin-top: 16px;">
+          <aside class="browser-sidebar">
+            <div class="browser-summary">
+              <div class="browser-stat"><strong id="totalCount">0</strong><span>总题数</span></div>
+              <div class="browser-stat"><strong id="subsetCount">0</strong><span>subset 数量</span></div>
+              <div class="browser-stat"><strong id="domainCount">0</strong><span>领域数量</span></div>
+              <div class="browser-stat"><strong id="diamondCount">0</strong><span>Diamond 题数</span></div>
+            </div>
+            <div class="filter-group">
+              <label for="taskSearch">搜索</label>
+              <input id="taskSearch" type="search" placeholder="搜题面、答案、writer 或 subdomain" />
+            </div>
+            <div class="filter-group">
+              <label for="subsetFilter">Subset</label>
+              <select id="subsetFilter"><option value="all">全部 subset</option></select>
+            </div>
+            <div class="filter-group">
+              <label for="domainFilter">Domain</label>
+              <select id="domainFilter"><option value="all">全部 domain</option></select>
+            </div>
+            <div class="result-meta"><span id="resultCount">0 题</span><span>点击左侧题目查看详情</span></div>
+            <div class="task-list" id="taskList"></div>
+          </aside>
+          <div class="browser-detail" id="detailPane">
+            <div class="detail-empty"><p>正在加载 GPQA 本地题目数据。</p></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="footer">
+        <p><strong>当前结论：</strong>`GPQA` 适合测高门槛科学多选推理，不适合拿来代表 agent 系统能力；而 `Diamond` 则是当前最主流的报告子集。</p>
+      </section>
+    </main>
+
+    <script src="./gpqa-browser-data.js"></script>
+    <script>
+      (() => {
+        const items = Array.isArray(window.GPQA_ITEMS) ? window.GPQA_ITEMS : [];
+        const searchInput = document.getElementById("taskSearch");
+        const subsetFilter = document.getElementById("subsetFilter");
+        const domainFilter = document.getElementById("domainFilter");
+        const taskList = document.getElementById("taskList");
+        const detailPane = document.getElementById("detailPane");
+        const resultCount = document.getElementById("resultCount");
+
+        const escapeHtml = (value) =>
+          String(value)
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#39;");
+        const summarize = (value, limit = 128) =>
+          value.length > limit ? `${value.slice(0, limit).trim()}...` : value;
+
+        const subsets = [...new Set(items.map((item) => item.subset))].sort();
+        const domains = [...new Set(items.map((item) => item.domain || "Unknown"))].sort();
+
+        document.getElementById("totalCount").textContent = String(items.length);
+        document.getElementById("subsetCount").textContent = String(subsets.length);
+        document.getElementById("domainCount").textContent = String(domains.length);
+        document.getElementById("diamondCount").textContent = String(
+          items.filter((item) => item.subset === "gpqa_diamond").length
+        );
+
+        subsetFilter.insertAdjacentHTML("beforeend", subsets.map((s) => `<option value="${escapeHtml(s)}">${escapeHtml(s)}</option>`).join(""));
+        domainFilter.insertAdjacentHTML("beforeend", domains.map((d) => `<option value="${escapeHtml(d)}">${escapeHtml(d)}</option>`).join(""));
+
+        const state = {
+          query: "",
+          subset: "all",
+          domain: "all",
+          activeId: items[0]?.id || null
+        };
+
+        const getFilteredItems = () =>
+          items.filter((item) => {
+            const haystack = `${item.question} ${item.correct_answer} ${item.subdomain} ${item.writer}`.toLowerCase();
+            const matchesQuery = !state.query || haystack.includes(state.query);
+            const matchesSubset = state.subset === "all" || item.subset === state.subset;
+            const matchesDomain = state.domain === "all" || (item.domain || "Unknown") === state.domain;
+            return matchesQuery && matchesSubset && matchesDomain;
+          });
+
+        const renderDetail = (item) => {
+          if (!item) {
+            detailPane.innerHTML = `<div class="detail-empty"><p>当前筛选条件下没有题目。</p></div>`;
+            return;
+          }
+
+          const choices = [item.correct_answer, ...item.incorrect_answers].filter(Boolean);
+          detailPane.innerHTML = `
+            <div class="detail-topline">
+              <span class="mini-pill">${escapeHtml(item.subset)}</span>
+              <span class="mini-pill">${escapeHtml(item.domain || "Unknown")}</span>
+              <span class="mini-pill">${escapeHtml(item.subdomain || "Unknown subdomain")}</span>
+            </div>
+            <h3>GPQA 样本详情</h3>
+            <div class="detail-meta">
+              <span class="mini-pill">${escapeHtml(item.id)}</span>
+              <span class="mini-pill">writer: ${escapeHtml(item.writer || "Unknown")}</span>
+              <span class="mini-pill">题面长度 ${escapeHtml(item.question_chars)} 字符</span>
+            </div>
+            <div class="detail-grid">
+              <div class="detail-block">
+                <span class="detail-label">题面</span>
+                <p class="detail-pre">${escapeHtml(item.question)}</p>
+              </div>
+              <div class="detail-block">
+                <span class="detail-label">选项</span>
+                <ol class="choice-list">${choices.map((choice) => `<li>${escapeHtml(choice)}</li>`).join("")}</ol>
+              </div>
+              <div class="detail-block">
+                <span class="detail-label">标准答案</span>
+                <p class="detail-pre">${escapeHtml(item.correct_answer)}</p>
+              </div>
+              <div class="detail-block">
+                <span class="detail-label">Explanation 预览</span>
+                <p class="detail-pre">${escapeHtml(item.explanation_preview)}</p>
+              </div>
+            </div>
+          `;
+        };
+
+        const renderList = (filteredItems) => {
+          resultCount.textContent = `${filteredItems.length} 题`;
+          if (!filteredItems.some((item) => item.id === state.activeId)) state.activeId = filteredItems[0]?.id || null;
+          if (!filteredItems.length) {
+            taskList.innerHTML = "";
+            renderDetail(null);
+            return;
+          }
+          taskList.innerHTML = filteredItems.map((item) => `
+            <button class="task-button${item.id === state.activeId ? " active" : ""}" data-id="${escapeHtml(item.id)}">
+              <div class="task-topline">
+                <span class="mini-pill">${escapeHtml(item.subset)}</span>
+                <span class="mini-pill">${escapeHtml(item.domain || "Unknown")}</span>
+              </div>
+              <div class="task-preview">${escapeHtml(summarize(item.question))}</div>
+              <div class="task-id">${escapeHtml(item.subdomain || "Unknown subdomain")}</div>
+            </button>
+          `).join("");
+          renderDetail(filteredItems.find((item) => item.id === state.activeId));
+          taskList.querySelectorAll(".task-button").forEach((button) => {
+            button.addEventListener("click", () => {
+              state.activeId = button.dataset.id;
+              render();
+            });
+          });
+        };
+
+        const render = () => renderList(getFilteredItems());
+
+        searchInput.addEventListener("input", (event) => {
+          state.query = event.target.value.trim().toLowerCase();
+          render();
+        });
+        subsetFilter.addEventListener("change", (event) => {
+          state.subset = event.target.value;
+          render();
+        });
+        domainFilter.addEventListener("change", (event) => {
+          state.domain = event.target.value;
+          render();
+        });
+
+        render();
+      })();
+    </script>
+  </body>
+</html>
