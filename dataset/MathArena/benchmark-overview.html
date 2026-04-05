@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MathArena 基准说明</title>
+    <style>
+      :root {
+        --bg: #f2efe9;
+        --bg-alt: #e4ddd2;
+        --paper: rgba(255, 251, 246, 0.86);
+        --paper-strong: rgba(255, 252, 248, 0.96);
+        --text: #1f1a16;
+        --muted: #665c50;
+        --line: rgba(52, 38, 18, 0.12);
+        --accent: #0f4c44;
+        --accent-2: #7d4e98;
+        --accent-3: #c47733;
+        --shadow: 0 22px 60px rgba(56, 39, 17, 0.08);
+        --radius: 24px;
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        color: var(--text);
+        font-family: "IBM Plex Sans", "PingFang SC", "Microsoft YaHei", sans-serif;
+        background:
+          radial-gradient(circle at top left, rgba(15, 76, 68, 0.16), transparent 28rem),
+          radial-gradient(circle at top right, rgba(125, 78, 152, 0.14), transparent 28rem),
+          linear-gradient(180deg, var(--bg) 0%, var(--bg-alt) 100%);
+      }
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        opacity: 0.28;
+        background-image:
+          linear-gradient(rgba(31, 26, 22, 0.04) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(31, 26, 22, 0.04) 1px, transparent 1px);
+        background-size: 34px 34px;
+      }
+      a { color: inherit; }
+      .shell { width: min(1180px, calc(100vw - 28px)); margin: 0 auto; padding: 18px 0 56px; position: relative; z-index: 1; }
+      .hero {
+        position: relative;
+        overflow: hidden;
+        padding: 32px;
+        border-radius: 34px;
+        background: linear-gradient(135deg, rgba(15, 76, 68, 0.96), rgba(125, 78, 152, 0.88) 48%, rgba(196, 119, 51, 0.9));
+        color: #fffaf4;
+        box-shadow: var(--shadow);
+      }
+      .hero::after {
+        content: "";
+        position: absolute;
+        width: 320px;
+        height: 320px;
+        right: -110px;
+        top: -110px;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgba(255, 233, 187, 0.32), transparent 68%);
+      }
+      .eyebrow, h1, h2, h3, .metric-value, .browser-stat strong { font-family: "Space Grotesk", "Avenir Next Condensed", "PingFang SC", sans-serif; }
+      .eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        padding: 8px 12px;
+        border-radius: 999px;
+        background: rgba(255, 248, 241, 0.12);
+        border: 1px solid rgba(255, 248, 241, 0.16);
+        font-size: 12px;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+      .eyebrow::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: #ffd980; }
+      .hero-grid { display: grid; grid-template-columns: 1.3fr 0.9fr; gap: 24px; margin-top: 18px; }
+      h1 { margin: 14px 0 16px; font-size: clamp(40px, 7vw, 80px); line-height: 0.95; letter-spacing: -0.06em; max-width: 8ch; }
+      .hero-copy { margin: 0; max-width: 62ch; font-size: 16px; line-height: 1.76; color: rgba(255, 249, 244, 0.9); }
+      .hero-tags { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 20px; }
+      .hero-tags span { padding: 10px 14px; border-radius: 999px; border: 1px solid rgba(255, 248, 241, 0.18); background: rgba(255, 248, 241, 0.1); font-size: 14px; }
+      .hero-side { display: grid; gap: 16px; }
+      .hero-card { padding: 20px; border-radius: 22px; border: 1px solid rgba(255, 248, 241, 0.15); background: rgba(255, 248, 241, 0.12); }
+      .hero-card h3 { margin: 0 0 10px; font-size: 20px; }
+      .hero-card p { margin: 0; line-height: 1.7; color: rgba(255, 249, 244, 0.88); }
+      .hero-big { display: flex; justify-content: space-between; align-items: end; gap: 14px; }
+      .hero-big strong { display: block; font-size: 44px; line-height: 0.92; }
+      .hero-big small { color: rgba(255, 249, 244, 0.72); }
+      section { margin-top: 22px; }
+      .panel { padding: 26px; border-radius: var(--radius); border: 1px solid var(--line); background: var(--paper); box-shadow: var(--shadow); }
+      .section-head { display: flex; justify-content: space-between; gap: 16px; align-items: end; margin-bottom: 18px; }
+      .section-head h2 { margin: 0; font-size: clamp(28px, 4vw, 42px); letter-spacing: -0.05em; }
+      .section-head p { margin: 0; max-width: 60ch; color: var(--muted); line-height: 1.75; }
+      .pill { display: inline-flex; align-items: center; padding: 8px 12px; border-radius: 999px; background: rgba(15, 76, 68, 0.1); color: var(--accent); font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; }
+      .metrics { display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px; }
+      .metric { padding: 18px; border-radius: 18px; border: 1px solid var(--line); background: var(--paper-strong); }
+      .metric-label { font-size: 13px; color: var(--muted); }
+      .metric-value { margin-top: 8px; font-size: clamp(28px, 4vw, 40px); line-height: 0.95; }
+      .metric-note { margin-top: 10px; font-size: 13px; color: var(--muted); line-height: 1.6; }
+      .two-col { display: grid; grid-template-columns: 1.04fr 0.96fr; gap: 16px; }
+      .cards { display: grid; gap: 14px; }
+      .cards.three { grid-template-columns: repeat(3, 1fr); }
+      .card, .detail-block { padding: 18px; border-radius: 18px; border: 1px solid var(--line); background: var(--paper-strong); }
+      .card h3 { margin: 0 0 10px; font-size: 19px; }
+      .card p, .timeline p, .footer p, .browser-note { margin: 0; color: var(--muted); line-height: 1.74; }
+      .timeline { display: grid; gap: 12px; }
+      .timeline-item { padding-left: 14px; border-left: 4px solid rgba(196, 119, 51, 0.28); }
+      .timeline-item strong { display: block; margin-bottom: 6px; }
+      .validation-browser { display: grid; grid-template-columns: 330px minmax(0, 1fr); gap: 16px; }
+      .browser-sidebar, .browser-detail { min-height: 660px; border-radius: 22px; border: 1px solid var(--line); background: var(--paper-strong); }
+      .browser-sidebar { padding: 18px; }
+      .browser-summary { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 16px; }
+      .browser-stat { padding: 14px; border-radius: 16px; background: rgba(15, 76, 68, 0.06); border: 1px solid rgba(15, 76, 68, 0.12); }
+      .browser-stat strong { display: block; font-size: 28px; line-height: 1; }
+      .browser-stat span { display: block; margin-top: 6px; color: var(--muted); font-size: 12px; line-height: 1.5; }
+      .filter-group + .filter-group { margin-top: 12px; }
+      .filter-group label { display: block; margin-bottom: 6px; font-size: 13px; color: var(--muted); }
+      .filter-group input, .filter-group select { width: 100%; border: 1px solid var(--line); border-radius: 12px; padding: 12px 13px; font: inherit; background: #fffdf9; }
+      .result-meta { display: flex; justify-content: space-between; gap: 10px; margin: 14px 0 12px; color: var(--muted); font-size: 13px; }
+      .task-list { display: grid; gap: 10px; max-height: 450px; overflow: auto; padding-right: 4px; }
+      .task-button { width: 100%; text-align: left; border: 1px solid var(--line); border-radius: 16px; padding: 14px; background: #fffdf9; cursor: pointer; }
+      .task-button:hover, .task-button.active { border-color: rgba(15, 76, 68, 0.28); background: rgba(15, 76, 68, 0.06); }
+      .task-topline, .detail-topline, .detail-meta { display: flex; flex-wrap: wrap; gap: 8px; }
+      .mini-pill { display: inline-flex; padding: 5px 9px; border-radius: 999px; background: rgba(15, 76, 68, 0.08); color: var(--accent); font-size: 11px; font-weight: 700; }
+      .task-preview { margin-top: 10px; font-size: 14px; line-height: 1.6; }
+      .task-id { margin-top: 8px; color: var(--muted); font-size: 12px; }
+      .browser-detail { padding: 20px; }
+      .detail-empty { min-height: 100%; display: grid; place-items: center; text-align: center; color: var(--muted); }
+      .browser-detail h3 { margin: 14px 0 10px; font-size: 26px; }
+      .detail-grid { display: grid; gap: 16px; margin-top: 16px; }
+      .detail-label { display: block; margin-bottom: 8px; color: var(--muted); font-size: 13px; }
+      .detail-pre { margin: 0; white-space: pre-wrap; word-break: break-word; line-height: 1.74; }
+      .footer { padding: 22px 26px; border-radius: 22px; border: 1px solid var(--line); background: rgba(255, 252, 247, 0.76); }
+      @media (max-width: 980px) { .hero-grid, .two-col, .validation-browser, .cards.three, .metrics { grid-template-columns: 1fr 1fr; } }
+      @media (max-width: 760px) {
+        .shell { width: min(100vw - 16px, 100%); padding-top: 8px; }
+        .hero, .panel { padding: 20px; }
+        .hero-grid, .two-col, .validation-browser, .cards.three, .metrics { grid-template-columns: 1fr; }
+        .section-head { flex-direction: column; align-items: start; }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="shell">
+      <header class="hero">
+        <span class="eyebrow">Benchmark Briefing</span>
+        <div class="hero-grid">
+          <div>
+            <h1>MathArena 是新鲜数学题评测家族，不是单一静态数据集。</h1>
+            <p class="hero-copy">
+              它的关键价值在于持续吸纳新近竞赛、研究级和图像题，把“污染更少的新题”做成一个滚动 benchmark suite。
+              这也意味着本地副本不是统一结构：有的子集是 exact-answer 文本题，有的是图像题，有的则是 proof / partial-credit 题。
+            </p>
+            <div class="hero-tags">
+              <span>24 个本地子集</span>
+              <span>648 题</span>
+              <span>168 图像题</span>
+              <span>核对日期 2026-04-05</span>
+            </div>
+          </div>
+          <div class="hero-side">
+            <div class="hero-card">
+              <h3>一句话定位</h3>
+              <p>`MathArena` 更接近“数学 benchmark 平台 / 家族”，而不是像 `MATH-500` 那样的单文件离线测试集。</p>
+            </div>
+            <div class="hero-card hero-big">
+              <div><strong>41</strong><small>proof / partial-credit 题</small></div>
+              <div><strong>439</strong><small>文本 exact-answer 题</small></div>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <section class="panel">
+        <div class="section-head">
+          <div>
+            <h2>核心数字</h2>
+            <p>最能体现 MathArena 结构差异的不是总题量，而是题型异质性和子集数量。</p>
+          </div>
+          <span class="pill">Local Snapshot</span>
+        </div>
+        <div class="metrics">
+          <article class="metric"><div class="metric-label">总题数</div><div class="metric-value">648</div><div class="metric-note">本地 24 个 parquet 子集汇总。</div></article>
+          <article class="metric"><div class="metric-label">子集数</div><div class="metric-value">24</div><div class="metric-note">AIME / HMMT / Kangaroo / IMO 等。</div></article>
+          <article class="metric"><div class="metric-label">文本精确答案</div><div class="metric-value">439</div><div class="metric-note">标准文本题。</div></article>
+          <article class="metric"><div class="metric-label">图像精确答案</div><div class="metric-value">168</div><div class="metric-note">题面主要在图像字段里。</div></article>
+          <article class="metric"><div class="metric-label">Proof / 部分分</div><div class="metric-value">41</div><div class="metric-note">不能退化成简单 exact match。</div></article>
+        </div>
+      </section>
+
+      <div class="two-col">
+        <section class="panel">
+          <div class="section-head">
+            <div>
+              <h2>它主要测什么</h2>
+              <p>和传统 final-answer benchmark 不同，MathArena 把新题、多模态和 proof 评分揉在了一起。</p>
+            </div>
+            <span class="pill">Capability</span>
+          </div>
+          <div class="cards three">
+            <article class="card"><h3>新鲜竞赛题</h3><p>通过引入新近竞赛和研究型题目，尽量降低模型直接背题带来的污染。</p></article>
+            <article class="card"><h3>图像数学题</h3><p>`Kangaroo` 等子集里，题面主要通过图像给出，不能用纯文本 benchmark 的思路看待。</p></article>
+            <article class="card"><h3>证明与部分分</h3><p>`USAMO`、`IMO` 等 proof 子集依赖 grading scheme 或 rubric，不能简单看 boxed answer。</p></article>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="section-head">
+            <div>
+              <h2>评测机制</h2>
+              <p>MathArena 没有一个统一 scorer，因为题型本身就不是单态的。</p>
+            </div>
+            <span class="pill">Eval Family</span>
+          </div>
+          <div class="timeline">
+            <div class="timeline-item"><strong>1. 文本 exact-answer 题</strong><p>通常按最终答案是否正确来评分，适合 boxed-answer 风格模型。</p></div>
+            <div class="timeline-item"><strong>2. 图像题</strong><p>需要读图；本地 parquet 中图像存为二进制字段，不能当作普通文本题浏览。</p></div>
+            <div class="timeline-item"><strong>3. Proof / 部分分题</strong><p>依赖 `grading_scheme`，部分子集还带 `sample_solution` / `sample_grading`。</p></div>
+            <div class="timeline-item"><strong>4. 平台属性强</strong><p>它比静态 benchmark 更像滚动更新的评测家族，因此本地副本只是一个时间截面。</p></div>
+          </div>
+        </section>
+      </div>
+
+      <section class="panel">
+        <div class="section-head">
+          <div>
+            <h2>公开数据查看器</h2>
+            <p>这里接入本地 `matharena-browser-data.js`。可以按 subset 和任务模式筛选，查看文本题面、答案和 proof 预览。图像 payload 没有直接塞进浏览器数据文件，所以图像题只显示结构化元数据。</p>
+          </div>
+          <span class="pill">Data Viewer</span>
+        </div>
+        <p class="browser-note">如果某条样本没有文本题面，通常意味着题面主要存在于 `image` 字段；这类题在查看器里会明确标记为图像驱动。</p>
+        <div class="validation-browser" style="margin-top: 16px;">
+          <aside class="browser-sidebar">
+            <div class="browser-summary">
+              <div class="browser-stat"><strong id="totalCount">0</strong><span>总样本数</span></div>
+              <div class="browser-stat"><strong id="subsetCount">0</strong><span>subset 数量</span></div>
+              <div class="browser-stat"><strong id="imageCount">0</strong><span>图像题数量</span></div>
+              <div class="browser-stat"><strong id="proofCount">0</strong><span>proof / 部分分题数</span></div>
+            </div>
+            <div class="filter-group">
+              <label for="taskSearch">搜索</label>
+              <input id="taskSearch" type="search" placeholder="搜 subset、题面、答案或 source" />
+            </div>
+            <div class="filter-group">
+              <label for="subsetFilter">Subset</label>
+              <select id="subsetFilter"><option value="all">全部 subset</option></select>
+            </div>
+            <div class="filter-group">
+              <label for="modeFilter">任务模式</label>
+              <select id="modeFilter">
+                <option value="all">全部模式</option>
+                <option value="文本精确答案">文本精确答案</option>
+                <option value="图像精确答案">图像精确答案</option>
+                <option value="证明 / 部分分">证明 / 部分分</option>
+              </select>
+            </div>
+            <div class="result-meta"><span id="resultCount">0 题</span><span>点击左侧样本查看详情</span></div>
+            <div class="task-list" id="taskList"></div>
+          </aside>
+          <div class="browser-detail" id="detailPane">
+            <div class="detail-empty"><p>正在加载 MathArena 本地样本数据。</p></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="footer">
+        <p><strong>当前结论：</strong>`MathArena` 的核心不是某一份静态测试文件，而是“新鲜数学题 + 多评测形态”的平台化 benchmark 家族。本地查看器适合理解结构，不等于完整重建官方站点。</p>
+      </section>
+    </main>
+
+    <script src="./matharena-browser-data.js"></script>
+    <script>
+      (() => {
+        const items = Array.isArray(window.MATHARENA_ITEMS) ? window.MATHARENA_ITEMS : [];
+        const searchInput = document.getElementById("taskSearch");
+        const subsetFilter = document.getElementById("subsetFilter");
+        const modeFilter = document.getElementById("modeFilter");
+        const taskList = document.getElementById("taskList");
+        const detailPane = document.getElementById("detailPane");
+        const resultCount = document.getElementById("resultCount");
+
+        const getMode = (item) => {
+          if (item.has_grading_scheme) return "证明 / 部分分";
+          if (item.has_image) return "图像精确答案";
+          return "文本精确答案";
+        };
+
+        const escapeHtml = (value) =>
+          String(value)
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#39;");
+        const summarize = (value, limit = 128) =>
+          value.length > limit ? `${value.slice(0, limit).trim()}...` : value;
+
+        const subsets = [...new Set(items.map((item) => item.subset))].sort();
+
+        document.getElementById("totalCount").textContent = String(items.length);
+        document.getElementById("subsetCount").textContent = String(subsets.length);
+        document.getElementById("imageCount").textContent = String(items.filter((item) => item.has_image).length);
+        document.getElementById("proofCount").textContent = String(items.filter((item) => item.has_grading_scheme).length);
+
+        subsetFilter.insertAdjacentHTML("beforeend", subsets.map((s) => `<option value="${escapeHtml(s)}">${escapeHtml(s)}</option>`).join(""));
+
+        const state = {
+          query: "",
+          subset: "all",
+          mode: "all",
+          activeId: items[0]?.id || null
+        };
+
+        const getFilteredItems = () =>
+          items.filter((item) => {
+            const mode = getMode(item);
+            const haystack = `${item.id} ${item.subset} ${item.problem} ${item.answer} ${item.source}`.toLowerCase();
+            const matchesQuery = !state.query || haystack.includes(state.query);
+            const matchesSubset = state.subset === "all" || item.subset === state.subset;
+            const matchesMode = state.mode === "all" || mode === state.mode;
+            return matchesQuery && matchesSubset && matchesMode;
+          });
+
+        const renderDetail = (item) => {
+          if (!item) {
+            detailPane.innerHTML = `<div class="detail-empty"><p>当前筛选条件下没有样本。</p></div>`;
+            return;
+          }
+
+          const mode = getMode(item);
+          const problemText = item.problem
+            ? escapeHtml(item.problem)
+            : "这道题的主要题面存放在图像字段中，当前轻量查看器没有直接内嵌原始图片。";
+          const answerText = item.answer || "当前本地样本没有单独文本答案字段。";
+          const sourceBits = [item.source, item.competition, item.problem_type].filter(Boolean).join(" / ");
+
+          detailPane.innerHTML = `
+            <div class="detail-topline">
+              <span class="mini-pill">${escapeHtml(item.subset)}</span>
+              <span class="mini-pill">${escapeHtml(mode)}</span>
+              <span class="mini-pill">#${escapeHtml(item.problem_idx)}</span>
+            </div>
+            <h3>MathArena 样本详情</h3>
+            <div class="detail-meta">
+              ${sourceBits ? `<span class="mini-pill">${escapeHtml(sourceBits)}</span>` : ""}
+              ${item.points ? `<span class="mini-pill">${escapeHtml(item.points)} points</span>` : ""}
+              ${item.has_image ? `<span class="mini-pill">image-backed</span>` : ""}
+            </div>
+            <div class="detail-grid">
+              <div class="detail-block">
+                <span class="detail-label">题面</span>
+                <p class="detail-pre">${problemText}</p>
+              </div>
+              <div class="detail-block">
+                <span class="detail-label">答案 / 目标</span>
+                <p class="detail-pre">${escapeHtml(answerText)}</p>
+              </div>
+              ${item.sample_solution_preview ? `
+              <div class="detail-block">
+                <span class="detail-label">sample_solution 预览</span>
+                <p class="detail-pre">${escapeHtml(item.sample_solution_preview)}</p>
+              </div>` : ""}
+              ${item.sample_grading_preview ? `
+              <div class="detail-block">
+                <span class="detail-label">sample_grading 预览</span>
+                <p class="detail-pre">${escapeHtml(item.sample_grading_preview)}</p>
+              </div>` : ""}
+            </div>
+          `;
+        };
+
+        const renderList = (filteredItems) => {
+          resultCount.textContent = `${filteredItems.length} 题`;
+          if (!filteredItems.some((item) => item.id === state.activeId)) state.activeId = filteredItems[0]?.id || null;
+          if (!filteredItems.length) {
+            taskList.innerHTML = "";
+            renderDetail(null);
+            return;
+          }
+          taskList.innerHTML = filteredItems.map((item) => `
+            <button class="task-button${item.id === state.activeId ? " active" : ""}" data-id="${escapeHtml(item.id)}">
+              <div class="task-topline">
+                <span class="mini-pill">${escapeHtml(item.subset)}</span>
+                <span class="mini-pill">${escapeHtml(getMode(item))}</span>
+              </div>
+              <div class="task-preview">${escapeHtml(summarize(item.problem || "[图像题：题面未内嵌到浏览器数据文件]"))}</div>
+              <div class="task-id">${escapeHtml(item.id)}</div>
+            </button>
+          `).join("");
+          renderDetail(filteredItems.find((item) => item.id === state.activeId));
+          taskList.querySelectorAll(".task-button").forEach((button) => {
+            button.addEventListener("click", () => {
+              state.activeId = button.dataset.id;
+              render();
+            });
+          });
+        };
+
+        const render = () => renderList(getFilteredItems());
+
+        searchInput.addEventListener("input", (event) => {
+          state.query = event.target.value.trim().toLowerCase();
+          render();
+        });
+        subsetFilter.addEventListener("change", (event) => {
+          state.subset = event.target.value;
+          render();
+        });
+        modeFilter.addEventListener("change", (event) => {
+          state.mode = event.target.value;
+          render();
+        });
+
+        render();
+      })();
+    </script>
+  </body>
+</html>

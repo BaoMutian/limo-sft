@@ -1,5 +1,7 @@
-dataset/
 results/
+dataset/.cache/
+dataset/*/.cache/
+dataset/**/.cache/
 __pycache__/
 *.pyc
 .DS_Store

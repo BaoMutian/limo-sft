@@ -1,0 +1,66 @@
+---
+dataset_info:
+  features:
+  - name: problem_idx
+    dtype: int64
+  - name: problem
+    dtype: string
+  - name: answer
+    dtype: int64
+  splits:
+  - name: train
+    num_bytes: 6015
+    num_examples: 15
+  download_size: 6187
+  dataset_size: 6015
+configs:
+- config_name: default
+  data_files:
+  - split: train
+    path: data/train-*
+license: cc-by-nc-sa-4.0
+language:
+- en
+pretty_name: AIME I 2024
+size_categories:
+- n<1K
+---
+
+### Homepage and repository
+
+- **Homepage:** [https://matharena.ai/](https://matharena.ai/)
+- **Repository:** [https://github.com/eth-sri/matharena](https://github.com/eth-sri/matharena)
+
+### Dataset Summary
+
+This dataset contains the questions from AIME I 2024 used for the MathArena Leaderboard
+
+### Data Fields
+
+Below one can find the description of each field in the dataset.
+
+- `problem_idx` (int): Index of the problem in the competition
+- `problem` (str): Full problem statement
+- `answer` (str): Ground-truth answer to the question
+
+### Source Data
+
+The original questions were sourced from the AIME I 2024 competition. Questions were extracted, converted to LaTeX and verified.
+
+### Licensing Information
+
+This dataset is licensed under the Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0). Please abide by the license when using the provided data.
+
+### Citation Information
+
+```
+@misc{balunovic_srimatharena_2025,
+  title = {MathArena: Evaluating LLMs on Uncontaminated Math Competitions},
+  author = {Mislav Balunović and Jasper Dekoninck and Ivo Petrov and Nikola Jovanović and Martin Vechev},
+  copyright = {MIT},
+  url = {https://matharena.ai/},
+  publisher = {SRI Lab, ETH Zurich},
+  month = feb,
+  year = {2025},
+}
+```

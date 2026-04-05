@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MATH-500 基准说明</title>
+    <style>
+      :root {
+        --bg: #f4efe8;
+        --bg-alt: #e8dfd2;
+        --paper: rgba(255, 251, 246, 0.86);
+        --paper-strong: rgba(255, 252, 248, 0.96);
+        --text: #1f1a16;
+        --muted: #6a5d52;
+        --line: rgba(52, 38, 18, 0.12);
+        --accent: #1c3d5a;
+        --accent-2: #9a4d2d;
+        --accent-3: #546d2f;
+        --shadow: 0 22px 60px rgba(56, 39, 17, 0.08);
+        --radius: 24px;
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        color: var(--text);
+        font-family: "IBM Plex Sans", "PingFang SC", "Microsoft YaHei", sans-serif;
+        background:
+          radial-gradient(circle at top left, rgba(28, 61, 90, 0.14), transparent 28rem),
+          radial-gradient(circle at top right, rgba(154, 77, 45, 0.14), transparent 28rem),
+          linear-gradient(180deg, var(--bg) 0%, var(--bg-alt) 100%);
+      }
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        opacity: 0.28;
+        background-image:
+          linear-gradient(rgba(31, 26, 22, 0.04) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(31, 26, 22, 0.04) 1px, transparent 1px);
+        background-size: 34px 34px;
+      }
+      a { color: inherit; }
+      .shell { width: min(1180px, calc(100vw - 28px)); margin: 0 auto; padding: 18px 0 56px; position: relative; z-index: 1; }
+      .hero {
+        position: relative;
+        overflow: hidden;
+        padding: 32px;
+        border-radius: 34px;
+        background: linear-gradient(135deg, rgba(28, 61, 90, 0.96), rgba(68, 80, 131, 0.88) 48%, rgba(154, 77, 45, 0.9));
+        color: #fffaf4;
+        box-shadow: var(--shadow);
+      }
+      .hero::after {
+        content: "";
+        position: absolute;
+        width: 320px;
+        height: 320px;
+        right: -110px;
+        top: -110px;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgba(255, 233, 187, 0.32), transparent 68%);
+      }
+      .eyebrow, h1, h2, h3, .metric-value, .browser-stat strong {
+        font-family: "Space Grotesk", "Avenir Next Condensed", "PingFang SC", sans-serif;
+      }
+      .eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        padding: 8px 12px;
+        border-radius: 999px;
+        background: rgba(255, 248, 241, 0.12);
+        border: 1px solid rgba(255, 248, 241, 0.16);
+        font-size: 12px;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+      .eyebrow::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: #ffd980; }
+      .hero-grid { display: grid; grid-template-columns: 1.3fr 0.9fr; gap: 24px; margin-top: 18px; }
+      h1 { margin: 14px 0 16px; font-size: clamp(40px, 7vw, 80px); line-height: 0.95; letter-spacing: -0.06em; max-width: 8ch; }
+      .hero-copy { margin: 0; max-width: 62ch; font-size: 16px; line-height: 1.76; color: rgba(255, 249, 244, 0.9); }
+      .hero-tags { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 20px; }
+      .hero-tags span { padding: 10px 14px; border-radius: 999px; border: 1px solid rgba(255, 248, 241, 0.18); background: rgba(255, 248, 241, 0.1); font-size: 14px; }
+      .hero-side { display: grid; gap: 16px; }
+      .hero-card { padding: 20px; border-radius: 22px; border: 1px solid rgba(255, 248, 241, 0.15); background: rgba(255, 248, 241, 0.12); }
+      .hero-card h3 { margin: 0 0 10px; font-size: 20px; }
+      .hero-card p { margin: 0; line-height: 1.7; color: rgba(255, 249, 244, 0.88); }
+      .hero-big { display: flex; justify-content: space-between; align-items: end; gap: 14px; }
+      .hero-big strong { display: block; font-size: 44px; line-height: 0.92; }
+      .hero-big small { color: rgba(255, 249, 244, 0.72); }
+      section { margin-top: 22px; }
+      .panel { padding: 26px; border-radius: var(--radius); border: 1px solid var(--line); background: var(--paper); box-shadow: var(--shadow); }
+      .section-head { display: flex; justify-content: space-between; gap: 16px; align-items: end; margin-bottom: 18px; }
+      .section-head h2 { margin: 0; font-size: clamp(28px, 4vw, 42px); letter-spacing: -0.05em; }
+      .section-head p { margin: 0; max-width: 60ch; color: var(--muted); line-height: 1.75; }
+      .pill { display: inline-flex; align-items: center; padding: 8px 12px; border-radius: 999px; background: rgba(28, 61, 90, 0.1); color: var(--accent); font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; }
+      .metrics { display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px; }
+      .metric { padding: 18px; border-radius: 18px; border: 1px solid var(--line); background: var(--paper-strong); }
+      .metric-label { font-size: 13px; color: var(--muted); }
+      .metric-value { margin-top: 8px; font-size: clamp(28px, 4vw, 40px); line-height: 0.95; }
+      .metric-note { margin-top: 10px; font-size: 13px; color: var(--muted); line-height: 1.6; }
+      .two-col { display: grid; grid-template-columns: 1.05fr 0.95fr; gap: 16px; }
+      .cards { display: grid; gap: 14px; }
+      .cards.three { grid-template-columns: repeat(3, 1fr); }
+      .card, .detail-block {
+        padding: 18px;
+        border-radius: 18px;
+        border: 1px solid var(--line);
+        background: var(--paper-strong);
+      }
+      .card h3 { margin: 0 0 10px; font-size: 19px; }
+      .card p, .timeline p, .footer p, .browser-note { margin: 0; color: var(--muted); line-height: 1.74; }
+      .timeline { display: grid; gap: 12px; }
+      .timeline-item { padding-left: 14px; border-left: 4px solid rgba(154, 77, 45, 0.28); }
+      .timeline-item strong { display: block; margin-bottom: 6px; }
+      .validation-browser { display: grid; grid-template-columns: 330px minmax(0, 1fr); gap: 16px; }
+      .browser-sidebar, .browser-detail { min-height: 640px; border-radius: 22px; border: 1px solid var(--line); background: var(--paper-strong); }
+      .browser-sidebar { padding: 18px; }
+      .browser-summary { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 16px; }
+      .browser-stat { padding: 14px; border-radius: 16px; background: rgba(28, 61, 90, 0.06); border: 1px solid rgba(28, 61, 90, 0.12); }
+      .browser-stat strong { display: block; font-size: 28px; line-height: 1; }
+      .browser-stat span { display: block; margin-top: 6px; color: var(--muted); font-size: 12px; line-height: 1.5; }
+      .filter-group + .filter-group { margin-top: 12px; }
+      .filter-group label { display: block; margin-bottom: 6px; font-size: 13px; color: var(--muted); }
+      .filter-group input, .filter-group select { width: 100%; border: 1px solid var(--line); border-radius: 12px; padding: 12px 13px; font: inherit; background: #fffdf9; }
+      .result-meta { display: flex; justify-content: space-between; gap: 10px; margin: 14px 0 12px; color: var(--muted); font-size: 13px; }
+      .task-list { display: grid; gap: 10px; max-height: 430px; overflow: auto; padding-right: 4px; }
+      .task-button { width: 100%; text-align: left; border: 1px solid var(--line); border-radius: 16px; padding: 14px; background: #fffdf9; cursor: pointer; }
+      .task-button:hover, .task-button.active { border-color: rgba(28, 61, 90, 0.28); background: rgba(28, 61, 90, 0.06); }
+      .task-topline, .detail-topline, .detail-meta { display: flex; flex-wrap: wrap; gap: 8px; }
+      .mini-pill { display: inline-flex; padding: 5px 9px; border-radius: 999px; background: rgba(28, 61, 90, 0.08); color: var(--accent); font-size: 11px; font-weight: 700; }
+      .task-preview { margin-top: 10px; font-size: 14px; line-height: 1.6; }
+      .task-id { margin-top: 8px; color: var(--muted); font-size: 12px; }
+      .browser-detail { padding: 20px; }
+      .detail-empty { min-height: 100%; display: grid; place-items: center; text-align: center; color: var(--muted); }
+      .browser-detail h3 { margin: 14px 0 10px; font-size: 26px; }
+      .detail-grid { display: grid; gap: 16px; margin-top: 16px; }
+      .detail-label { display: block; margin-bottom: 8px; color: var(--muted); font-size: 13px; }
+      .detail-pre { margin: 0; white-space: pre-wrap; word-break: break-word; line-height: 1.74; }
+      .footer { padding: 22px 26px; border-radius: 22px; border: 1px solid var(--line); background: rgba(255, 252, 247, 0.76); }
+      @media (max-width: 980px) { .hero-grid, .two-col, .validation-browser, .cards.three, .metrics { grid-template-columns: 1fr 1fr; } }
+      @media (max-width: 760px) {
+        .shell { width: min(100vw - 16px, 100%); padding-top: 8px; }
+        .hero, .panel { padding: 20px; }
+        .hero-grid, .two-col, .validation-browser, .cards.three, .metrics { grid-template-columns: 1fr; }
+        .section-head { flex-direction: column; align-items: start; }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="shell">
+      <header class="hero">
+        <span class="eyebrow">Benchmark Briefing</span>
+        <div class="hero-grid">
+          <div>
+            <h1>MATH-500 是稳定的离线数学回归集，不是线上榜单。</h1>
+            <p class="hero-copy">
+              这个 benchmark 的价值在于可复现、结构清晰、适合长期跟踪数学推理回归，而不是“最新最难”。
+              当前本地副本里 `test.jsonl` 已直接包含题面、完整解答和最终答案，因此它更像公开 hold-out 评测包，而不是隐藏标签测试服务。
+            </p>
+            <div class="hero-tags">
+              <span>500 题</span>
+              <span>7 个 subject</span>
+              <span>5 个 level</span>
+              <span>核对日期 2026-04-05</span>
+            </div>
+          </div>
+          <div class="hero-side">
+            <div class="hero-card">
+              <h3>一句话定位</h3>
+              <p>`MATH-500` 是静态、文本、final-answer 数学 benchmark，很适合做离线回归，不适合当作 agent benchmark 或实时 leaderboard 来理解。</p>
+            </div>
+            <div class="hero-card hero-big">
+              <div><strong>531</strong><small>解答平均字符数</small></div>
+              <div><strong>195.9</strong><small>题面平均字符数</small></div>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <section class="panel">
+        <div class="section-head">
+          <div>
+            <h2>核心数字</h2>
+            <p>最值得先看的是：题量固定、学科分桶稳定、难度分布偏高。</p>
+          </div>
+          <span class="pill">Local Snapshot</span>
+        </div>
+        <div class="metrics">
+          <article class="metric"><div class="metric-label">总题数</div><div class="metric-value">500</div><div class="metric-note">单文件静态评测集。</div></article>
+          <article class="metric"><div class="metric-label">Subjects</div><div class="metric-value">7</div><div class="metric-note">覆盖代数、几何、数论等。</div></article>
+          <article class="metric"><div class="metric-label">Level</div><div class="metric-value">5</div><div class="metric-note">level 4-5 占多数。</div></article>
+          <article class="metric"><div class="metric-label">Level 5</div><div class="metric-value">134</div><div class="metric-note">最高难度桶。</div></article>
+          <article class="metric"><div class="metric-label">数值答案</div><div class="metric-value">318</div><div class="metric-note">本地答案形式中占比最高。</div></article>
+        </div>
+      </section>
+
+      <div class="two-col">
+        <section class="panel">
+          <div class="section-head">
+            <div>
+              <h2>它主要测什么</h2>
+              <p>这是一个经典数学 final-answer 评测集，不带网页检索、不带图像工具链，也不做 proof rubric 打分。</p>
+            </div>
+            <span class="pill">Capability</span>
+          </div>
+          <div class="cards three">
+            <article class="card"><h3>文本数学推理</h3><p>题面是纯文本数学问题，强调从条件推导到最终答案的正确性。</p></article>
+            <article class="card"><h3>最终答案稳定性</h3><p>很适合比较不同 prompting、sampling、verifier 配置下答案是否稳定。</p></article>
+            <article class="card"><h3>学科 / 难度切片</h3><p>本地字段自带 `subject` 和 `level`，方便按桶定位模型短板。</p></article>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="section-head">
+            <div>
+              <h2>评测机制</h2>
+              <p>本地 `eval.yaml` 并不是最朴素的 exact match，而是 inspect-ai + `model_graded_fact` 包装。</p>
+            </div>
+            <span class="pill">Eval</span>
+          </div>
+          <div class="timeline">
+            <div class="timeline-item"><strong>1. 固定输入字段</strong><p>读取 `problem`，目标字段为 `answer`。</p></div>
+            <div class="timeline-item"><strong>2. 指定输出格式</strong><p>prompt 模板要求模型以 `Therefore, the final answer is: $\boxed{ANSWER}$` 结尾。</p></div>
+            <div class="timeline-item"><strong>3. 多次采样</strong><p>本地配置中 `epochs: 4`，再用 `pass_at_1` 汇总。</p></div>
+            <div class="timeline-item"><strong>4. Judge scorer</strong><p>当前 `eval.yaml` 使用 `model_graded_fact`，而不是单纯字符串比较。</p></div>
+          </div>
+        </section>
+      </div>
+
+      <section class="panel">
+        <div class="section-head">
+          <div>
+            <h2>公开数据查看器</h2>
+            <p>这里接入本地 `math500-browser-data.js`。可以按 subject、level 和答案形式筛选，并查看题面、标准答案和解答预览。</p>
+          </div>
+          <span class="pill">Data Viewer</span>
+        </div>
+        <p class="browser-note">当前查看器基于本地 `test.jsonl` 派生；因为本地文件本身已经包含答案和解答，所以这里展示的不是 hidden labels。</p>
+        <div class="validation-browser" style="margin-top: 16px;">
+          <aside class="browser-sidebar">
+            <div class="browser-summary">
+              <div class="browser-stat"><strong id="totalCount">0</strong><span>总题数</span></div>
+              <div class="browser-stat"><strong id="subjectCount">0</strong><span>subject 数量</span></div>
+              <div class="browser-stat"><strong id="level5Count">0</strong><span>Level 5 题数</span></div>
+              <div class="browser-stat"><strong id="latexCount">0</strong><span>LaTeX 答案题数</span></div>
+            </div>
+            <div class="filter-group">
+              <label for="taskSearch">搜索</label>
+              <input id="taskSearch" type="search" placeholder="搜题面、答案或 unique_id" />
+            </div>
+            <div class="filter-group">
+              <label for="subjectFilter">Subject</label>
+              <select id="subjectFilter"><option value="all">全部 subject</option></select>
+            </div>
+            <div class="filter-group">
+              <label for="levelFilter">Level</label>
+              <select id="levelFilter">
+                <option value="all">全部 level</option>
+                <option value="1">Level 1</option>
+                <option value="2">Level 2</option>
+                <option value="3">Level 3</option>
+                <option value="4">Level 4</option>
+                <option value="5">Level 5</option>
+              </select>
+            </div>
+            <div class="filter-group">
+              <label for="answerStyleFilter">答案形式</label>
+              <select id="answerStyleFilter"><option value="all">全部答案形式</option></select>
+            </div>
+            <div class="result-meta"><span id="resultCount">0 题</span><span>点击左侧题目查看详情</span></div>
+            <div class="task-list" id="taskList"></div>
+          </aside>
+          <div class="browser-detail" id="detailPane">
+            <div class="detail-empty"><p>正在加载 MATH-500 本地题目数据。</p></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="footer">
+        <p><strong>当前结论：</strong>`MATH-500` 最适合做数学推理离线回归和分桶分析，不适合当作 agent benchmark 或实时在线竞赛平台。</p>
+      </section>
+    </main>
+
+    <script src="./math500-browser-data.js"></script>
+    <script>
+      (() => {
+        const items = Array.isArray(window.MATH500_ITEMS) ? window.MATH500_ITEMS : [];
+        const searchInput = document.getElementById("taskSearch");
+        const subjectFilter = document.getElementById("subjectFilter");
+        const levelFilter = document.getElementById("levelFilter");
+        const answerStyleFilter = document.getElementById("answerStyleFilter");
+        const taskList = document.getElementById("taskList");
+        const detailPane = document.getElementById("detailPane");
+        const resultCount = document.getElementById("resultCount");
+        const escapeHtml = (value) =>
+          String(value)
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#39;");
+        const summarize = (value, limit = 128) =>
+          value.length > limit ? `${value.slice(0, limit).trim()}...` : value;
+
+        const subjects = [...new Set(items.map((item) => item.subject))].sort((a, b) => a.localeCompare(b));
+        const answerStyles = [...new Set(items.map((item) => item.answer_style))].sort((a, b) => a.localeCompare(b, "zh-CN"));
+
+        document.getElementById("totalCount").textContent = String(items.length);
+        document.getElementById("subjectCount").textContent = String(subjects.length);
+        document.getElementById("level5Count").textContent = String(items.filter((item) => item.level === 5).length);
+        document.getElementById("latexCount").textContent = String(items.filter((item) => item.answer_style === "LaTeX 表达式").length);
+
+        subjectFilter.insertAdjacentHTML("beforeend", subjects.map((s) => `<option value="${escapeHtml(s)}">${escapeHtml(s)}</option>`).join(""));
+        answerStyleFilter.insertAdjacentHTML("beforeend", answerStyles.map((s) => `<option value="${escapeHtml(s)}">${escapeHtml(s)}</option>`).join(""));
+
+        const state = {
+          query: "",
+          subject: "all",
+          level: "all",
+          answerStyle: "all",
+          activeId: items[0]?.id || null
+        };
+
+        const getFilteredItems = () =>
+          items.filter((item) => {
+            const haystack = `${item.id} ${item.problem} ${item.answer}`.toLowerCase();
+            const matchesQuery = !state.query || haystack.includes(state.query);
+            const matchesSubject = state.subject === "all" || item.subject === state.subject;
+            const matchesLevel = state.level === "all" || String(item.level) === state.level;
+            const matchesAnswerStyle = state.answerStyle === "all" || item.answer_style === state.answerStyle;
+            return matchesQuery && matchesSubject && matchesLevel && matchesAnswerStyle;
+          });
+
+        const renderDetail = (item) => {
+          if (!item) {
+            detailPane.innerHTML = `<div class="detail-empty"><p>当前筛选条件下没有题目。</p></div>`;
+            return;
+          }
+
+          detailPane.innerHTML = `
+            <div class="detail-topline">
+              <span class="mini-pill">${escapeHtml(item.subject)}</span>
+              <span class="mini-pill">Level ${escapeHtml(item.level)}</span>
+              <span class="mini-pill">${escapeHtml(item.answer_style)}</span>
+            </div>
+            <h3>MATH-500 样本详情</h3>
+            <div class="detail-meta">
+              <span class="mini-pill">${escapeHtml(item.id)}</span>
+              <span class="mini-pill">题面 ${escapeHtml(item.problem_chars)} 字符</span>
+              <span class="mini-pill">解答 ${escapeHtml(item.solution_chars)} 字符</span>
+            </div>
+            <div class="detail-grid">
+              <div class="detail-block">
+                <span class="detail-label">题面</span>
+                <p class="detail-pre">${escapeHtml(item.problem)}</p>
+              </div>
+              <div class="detail-block">
+                <span class="detail-label">标准答案</span>
+                <p class="detail-pre">${escapeHtml(item.answer)}</p>
+              </div>
+              <div class="detail-block">
+                <span class="detail-label">解答预览</span>
+                <p class="detail-pre">${escapeHtml(item.solution_preview)}</p>
+              </div>
+            </div>
+          `;
+        };
+
+        const renderList = (filteredItems) => {
+          resultCount.textContent = `${filteredItems.length} 题`;
+          if (!filteredItems.some((item) => item.id === state.activeId)) state.activeId = filteredItems[0]?.id || null;
+          if (!filteredItems.length) {
+            taskList.innerHTML = "";
+            renderDetail(null);
+            return;
+          }
+          taskList.innerHTML = filteredItems.map((item) => `
+            <button class="task-button${item.id === state.activeId ? " active" : ""}" data-id="${escapeHtml(item.id)}">
+              <div class="task-topline">
+                <span class="mini-pill">${escapeHtml(item.subject)}</span>
+                <span class="mini-pill">L${escapeHtml(item.level)}</span>
+                <span class="mini-pill">${escapeHtml(item.answer_style)}</span>
+              </div>
+              <div class="task-preview">${escapeHtml(summarize(item.problem))}</div>
+              <div class="task-id">${escapeHtml(item.id)}</div>
+            </button>
+          `).join("");
+          renderDetail(filteredItems.find((item) => item.id === state.activeId));
+          taskList.querySelectorAll(".task-button").forEach((button) => {
+            button.addEventListener("click", () => {
+              state.activeId = button.dataset.id;
+              render();
+            });
+          });
+        };
+
+        const render = () => renderList(getFilteredItems());
+
+        searchInput.addEventListener("input", (event) => {
+          state.query = event.target.value.trim().toLowerCase();
+          render();
+        });
+        subjectFilter.addEventListener("change", (event) => {
+          state.subject = event.target.value;
+          render();
+        });
+        levelFilter.addEventListener("change", (event) => {
+          state.level = event.target.value;
+          render();
+        });
+        answerStyleFilter.addEventListener("change", (event) => {
+          state.answerStyle = event.target.value;
+          render();
+        });
+
+        render();
+      })();
+    </script>
+  </body>
+</html>

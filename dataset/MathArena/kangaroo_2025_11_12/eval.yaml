@@ -1,0 +1,8 @@
+name: MathArena Kangaroo Grades 11-12 2025
+description: Problem set from the Kangaroo Tournament of 2025.
+evaluation_framework: math-arena
+
+tasks:
+  - id: MathArena/kangaroo_2025_11_12
+    config: default
+    split: train
