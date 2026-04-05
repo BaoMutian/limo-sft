@@ -144,6 +144,14 @@ async def evaluate_benchmark(
     correct = sum(1 for r in all_results if r.get("correct", False))
     accuracy = correct / total if total > 0 else 0.0
 
+    # Response length stats
+    resp_lengths = [len(r.get("response", "")) for r in all_results]
+    non_empty_lengths = [l for l in resp_lengths if l > 0]
+    avg_resp_len = sum(resp_lengths) // total if total > 0 else 0
+    avg_resp_len_nonempty = sum(non_empty_lengths) // len(non_empty_lengths) if non_empty_lengths else 0
+    empty_responses = sum(1 for l in resp_lengths if l == 0)
+    extraction_failures = sum(1 for r in all_results if not r.get("predicted", ""))
+
     metrics = {
         "benchmark": bench_cfg["name"],
         "total": total,
@@ -152,6 +160,11 @@ async def evaluate_benchmark(
         "accuracy_pct": f"{accuracy * 100:.1f}%",
         "mode": mode,
         "model": client.model,
+        "avg_response_chars": avg_resp_len,
+        "max_response_chars": max(resp_lengths) if resp_lengths else 0,
+        "min_response_chars": min(resp_lengths) if resp_lengths else 0,
+        "empty_responses": empty_responses,
+        "extraction_failures": extraction_failures,
     }
 
     # Per-category breakdown if metadata available
@@ -175,7 +188,7 @@ async def evaluate_benchmark(
     with open(metrics_path, "w") as f:
         json.dump(metrics, f, indent=2, ensure_ascii=False)
 
-    logger.info(f"  Result: {correct}/{total} = {accuracy*100:.1f}%")
+    logger.info(f"  Result: {correct}/{total} = {accuracy*100:.1f}% | avg_resp={avg_resp_len} chars | extract_fail={extraction_failures}")
     return metrics
 
 
@@ -285,25 +298,26 @@ async def main():
     elapsed = time.time() - start_time
 
     # Print summary table
-    print("\n" + "=" * 70)
+    print("\n" + "=" * 90)
     print(f"  Evaluation Summary — {api_cfg['model']} ({mode})")
-    print("=" * 70)
-    print(f"  {'Benchmark':<25} {'Correct':>8} {'Total':>6} {'Accuracy':>10}")
-    print("-" * 70)
+    print("=" * 90)
+    print(f"  {'Benchmark':<25} {'Correct':>8} {'Total':>6} {'Accuracy':>10} {'Avg Chars':>10} {'ExtFail':>8}")
+    print("-" * 90)
 
     total_correct = 0
     total_problems = 0
     for name, m in all_metrics.items():
-        print(f"  {m['benchmark']:<25} {m['correct']:>8} {m['total']:>6} {m['accuracy_pct']:>10}")
+        print(f"  {m['benchmark']:<25} {m['correct']:>8} {m['total']:>6} {m['accuracy_pct']:>10}"
+              f" {m.get('avg_response_chars', 0):>10} {m.get('extraction_failures', 0):>8}")
         total_correct += m["correct"]
         total_problems += m["total"]
 
     if total_problems > 0:
         avg_acc = total_correct / total_problems
-        print("-" * 70)
+        print("-" * 90)
         print(f"  {'OVERALL':<25} {total_correct:>8} {total_problems:>6} {avg_acc*100:>9.1f}%")
 
-    print("=" * 70)
+    print("=" * 90)
     print(f"  Time: {elapsed:.1f}s | Output: {output_dir}")
     print()
 

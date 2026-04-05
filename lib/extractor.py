@@ -120,8 +120,20 @@ def extract_answer(response: str, answer_type: str) -> str:
             return num
 
     if answer_type == "choice":
-        # Look for standalone letter (A-E) near the end
-        matches = re.findall(r"\b([A-E])\b", response[-200:])
+        # Strategy A: "answer is (X)" or "choose (X)" patterns
+        choice_patterns = [
+            r"[Aa]nswer\s+is\s+\(?([A-E])\)?",
+            r"[Cc]hoose\s+\(?([A-E])\)?",
+            r"[Cc]orrect\s+(?:answer|option|choice)\s+is\s+\(?([A-E])\)?",
+            r"\b[Oo]ption\s+\(?([A-E])\)?\s+is\s+correct",
+            r"^\s*\(?([A-E])\)?\s*$",  # standalone letter on its own line
+        ]
+        for pat in choice_patterns:
+            matches = list(re.finditer(pat, response, re.MULTILINE))
+            if matches:
+                return matches[-1].group(1)
+        # Strategy B: look for standalone letter (A-E) in last 500 chars
+        matches = re.findall(r"(?<![a-zA-Z])([A-E])(?![a-zA-Z])", response[-500:])
         if matches:
             return matches[-1]
 
