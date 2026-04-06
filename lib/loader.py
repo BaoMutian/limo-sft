@@ -85,6 +85,35 @@ def load_gpqa(path: str, metadata_keys: list[str] | None = None, seed: int = 42)
     return items
 
 
+def load_mcqa_jsonl(path: str, metadata_keys: list[str] | None = None) -> list[dict]:
+    """Load multiple-choice QA in JSONL format (e.g., MedQA).
+
+    Expects each line to have: question, options (dict {A:..., B:..., ...}), answer_idx (letter).
+    """
+    items = []
+    with open(path) as f:
+        for i, line in enumerate(f):
+            raw = json.loads(line)
+            question = raw["question"]
+            options = raw["options"]  # dict like {A: "...", B: "...", ...}
+            answer_letter = raw["answer_idx"]
+
+            labels = sorted(options.keys())
+            options_text = "\n".join(f"({lbl}) {options[lbl]}" for lbl in labels)
+            full_problem = f"{question}\n\n{options_text}"
+
+            item = {
+                "idx": i,
+                "problem": full_problem,
+                "answer": answer_letter,
+            }
+            for key in (metadata_keys or []):
+                if key in raw:
+                    item[key] = raw[key]
+            items.append(item)
+    return items
+
+
 def load_benchmark(bench_cfg: dict) -> list[dict]:
     """Load a benchmark dataset based on its configuration."""
     fmt = bench_cfg["data_format"]
@@ -107,5 +136,7 @@ def load_benchmark(bench_cfg: dict) -> list[dict]:
         return load_parquet(**kwargs)
     elif fmt == "gpqa_csv":
         return load_gpqa(path, metadata_keys=bench_cfg.get("metadata_keys"))
+    elif fmt == "mcqa_jsonl":
+        return load_mcqa_jsonl(path, metadata_keys=bench_cfg.get("metadata_keys"))
     else:
         raise ValueError(f"Unknown data format: {fmt}")

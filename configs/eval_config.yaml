@@ -209,6 +209,18 @@ benchmarks:
     instruction_cot: "Please reason step by step, then state your final answer as a single letter (A, B, C, or D) within \\boxed{}."
     instruction_direct: "Answer the following multiple-choice question. Put your final answer as a single letter (A, B, C, or D) within \\boxed{}."
 
+  medqa:
+    enabled: true
+    name: "MedQA"
+    path: "dataset/MedQA/test.jsonl"
+    data_format: "mcqa_jsonl"
+    problem_key: "question"
+    answer_key: "answer_idx"
+    answer_type: "choice"
+    system_prompt: "You are a medical expert. Answer the following multiple-choice question."
+    instruction_cot: "Please reason step by step, then state your final answer as a single letter (A, B, C, or D) within \\boxed{}."
+    instruction_direct: "Answer the following multiple-choice question. Put your final answer as a single letter (A, B, C, or D) within \\boxed{}."
+
 # --- Benchmarks NOT included (with reasons) ---
 # usamo_*:    Proof-based, requires rubric grading
 # imo_2025:   Proof-based, requires rubric grading
